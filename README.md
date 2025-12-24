@@ -1,28 +1,10 @@
-# **Unix-Shell**
+# **Unix Shell**
 
-## **Description**
-Unix-like shell supporting process creation, foreground/background execution, signal handling, and command parsing using POSIX system calls.
-
-
-This project is a custom Unix-like shell implemented in C. It provides a command-line interface for executing both internal and external commands, managing processes, and maintaining a history of commands. The shell is designed to mimic the behavior of a typical Unix shell, making it a great demonstration of system-level programming concepts.
-
----
+Unix-like shell implemented in C. It provides a command-line interface for executing internal and external commands, managing foreground and background processes, handling signals, and maintaining a command history.
 
 ## **Features**
-- **Internal Commands**:
-  - `exit`: Exit the shell.
-  - `pwd`: Print the current working directory.
-  - `cd`: Change the current directory, with support for:
-    - `cd` (no arguments): Navigate to the home directory.
-    - `cd -`: Return to the previous directory.
-    - `cd ~/dir`: Expand `~` to the home directory.
-  - `help`: Display help information for internal commands.
-  - `history`: View and re-run commands from the history.
-    - `!!`: Re-run the last command.
-    - `!n`: Re-run the nth command in history.
-
 - **External Commands**:
-  - Supports execution of external programs using `execvp`.
+  - Supports execution of external programs using `fork()` and `execvp`.
   - Background process execution with `&`.
 
 - **Command History**:
@@ -30,23 +12,31 @@ This project is a custom Unix-like shell implemented in C. It provides a command
   - Displays commands in reverse order (most recent first).
 
 - **Signal Handling**:
-  - Handles `Ctrl+C` (`SIGINT`) gracefully without crashing the shell.
+  - Handles `SIGINT` (`Ctrl+C`) appropriately without crashing the shell.
 
 - **Process Management**:
   - Supports foreground and background processes.
-  - Reaps zombie processes to prevent resource leaks.
+  - Cleans up zombie processes to prevent resource leaks.
 
----
+- **Built-in Commands**:
+  - `help`: Display help information for internal commands.
+  - `pwd`: Print the current working directory.
+  - `cd`: Change the current directory, with support for:
+    - `cd` (no arguments): Navigate to the home directory.
+    - `cd -`: Return to the previous directory.
+    - `cd ~/dir`: Expand `~` to the home directory.
+  - `history`: View and re-run commands from the history.
+    - `!!`: Re-run the last command.
+    - `!n`: Re-run the nth command in history.
+  - `exit`: Exit the shell.
 
-## **Getting Started**
+## **Running the Shell**
 
 ### **Prerequisites**
 To build and run this project, you need:
 - A Unix-like environment (Linux, macOS, or WSL on Windows).
-- `gcc` or `g++` (for compiling the code).
+- `gcc` or `clang` (for compiling the code).
 - `CMake` (for building the project).
-
----
 
 ### **Setting Up the Environment**
 
@@ -61,4 +51,57 @@ To build and run this project, you need:
 3. Open the WSL terminal and install the required tools:
    ```bash
    sudo apt update
+
    sudo apt install build-essential cmake
+   ```
+
+### **Building and Running the executable**
+1. Clone the project and navigate to the project root:
+   ```bash
+   git clone <repo-url>
+   cd Unix-Shell
+   ```
+2. Create and navigate to the build directory:
+   ```bash
+   mkdir build
+   cd build
+   ```
+3. Create the executable:
+   ```bash
+   cmake ..
+   make
+   ```
+4. Run the shell executable:
+   ```bash
+   ./shell
+   ```
+
+## **Technical Highlights**
+- **System-Level Programming**:
+  - Uses system calls like `fork`, `execvp`, and `waitpid` to manage processes.
+  - Implements signal handling with `sigaction` to gracefully handle interrupts (e.g., `Ctrl+C`).
+
+- **Command Parsing**:
+  - Tokenizes user input to parse commands, arguments, and background execution (`&`).
+
+- **Dynamic Memory Management**:
+  - Dynamically allocates and manages memory for command history and input parsing.
+
+- **Portability**:
+  - Designed for POSIX-compliant Unix-like systems (Linux, macOS, WSL).
+ 
+## Limitations
+- **No Advanced Shell Features**:
+  - Does not support piping (`|`) or input/output redirection (`>`, `<`).
+
+- **Limited History**:
+  - Command history is limited to the last 10 commands and is not persistent across sessions.
+
+- **No Job Control**:
+  - Does not implement job control commands such as `fg`, `bg`, or `jobs`.
+
+- **Platform Constraints**:
+  - Intended for Unix-like environments, not designed to run natively on Windows without WSL.
+
+
+   
